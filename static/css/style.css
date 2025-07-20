@@ -1,0 +1,70 @@
+/* Reset some defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #111f31;
+  color: #1f2d3d;
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0rem 0 1rem;
+  color: #ffffff;
+  background-color: #1b365d;
+    padding: 2rem;
+}
+
+/* Container with max-width to center content */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1600rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+/* Card styling */
+.card {
+  background-color: #fdffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(241, 233, 233, 0.522);
+  width: 50rem;
+  min-height: 360px;
+  padding: 1rem;
+  transition: transform 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Optional: Chart placeholder if using Jinja but charts not yet showing */
+.card:empty::before {
+  content: "Chart Placeholder";
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
