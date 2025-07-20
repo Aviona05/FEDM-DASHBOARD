@@ -51,25 +51,47 @@ def dashboard():
     chart_6 = fig6.to_html(full_html=False)
 
     # ----------- GRAPH 7: Confusion Matrix ----------- #
+    from sklearn.model_selection import train_test_split
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import LabelEncoder
     from sklearn.metrics import confusion_matrix
-    # Replace these with real model predictions
-    y_test = [0, 1, 0, 1, 1, 0]
-    y_pred = [0, 1, 0, 0, 1, 1]
+
+    # Features to use in model
+    features = ['Age', 'Gender', 'YearsAtCompany', 'WorkHoursPerWeek',
+                'RemoteWork', 'BurnoutLevel', 'JobSatisfaction', 'StressLevel',
+                'ProductivityScore', 'SleepHours', 'PhysicalActivityHrs',
+                'CommuteTime', 'HasMentalHealthSupport', 'ManagerSupportScore',
+                'HasTherapyAccess', 'MentalHealthDaysOff', 'SalaryRange',
+                'WorkLifeBalanceScore', 'TeamSize', 'CareerGrowthScore',
+                'BurnoutRisk']
+
+    df_model = df[features].dropna()
+
+    # Encode categorical variables
+    label_encoders = {}
+    for col in df_model.columns:
+        if df_model[col].dtype == 'object':
+            le = LabelEncoder()
+            df_model[col] = le.fit_transform(df_model[col])
+            label_encoders[col] = le
+
+    X = df_model.drop('BurnoutRisk', axis=1)
+    y = df_model['BurnoutRisk']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    cm = confusion_matrix(y_test, y_pred, labels=[0, 1])
     labels = ['No Treatment', 'Treatment']
-    cm = confusion_matrix(y_test, y_pred)
     fig7 = px.imshow(cm, text_auto=True, x=labels, y=labels,
                      labels=dict(x="Predicted", y="Actual", color="Count"),
                      title='Confusion Matrix – Predicting Mental Health Treatment')
     chart_7 = fig7.to_html(full_html=False)
 
-    # ----------- GRAPH 8: Feature Importance ----------- #
-    from sklearn.linear_model import LogisticRegression
-    import numpy as np
-    X = pd.DataFrame(np.random.randn(50, 3), columns=['feature1', 'feature2', 'feature3'])
-    y = np.random.randint(0, 2, size=50)
-    model = LogisticRegression().fit(X, y)
     feature_importances = pd.DataFrame({'feature': X.columns, 'importance': model.coef_[0]})
-    fig8 = px.bar(feature_importances.sort_values('importance'),
+    fig8 = px.bar(feature_importances.sort_values('importance', ascending=False),
                   x='importance', y='feature', orientation='h',
                   title='Feature Importances from Logistic Regression Model')
     chart_8 = fig8.to_html(full_html=False)
